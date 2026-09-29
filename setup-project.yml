@@ -1,0 +1,30 @@
+name: Install Flutter Project
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  install:
+    if: ${{ !hashFiles('pubspec.yaml') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract Flutter project
+        run: |
+          unzip -o flutter_project_source.zip -d .
+          rm -f flutter_project_source.zip setup-project.yml
+
+      - name: Commit Flutter project
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Install Flutter project"
+          git push
